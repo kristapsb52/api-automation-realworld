@@ -17,7 +17,9 @@ public class RealworldSteps extends BaseSteps {
   private final static String _API_USERS_ = "/api/users/";
   private final static String _API_ARTICLES_ = "/api/articles/";
   // Find endpoint for API login
-  private final static String _API_USERS_LOGIN_ = null;
+  private final static String _API_USERS_LOGIN_ = "/api/users/login/";
+  private final static String _API_USER_ = "/api/user/";
+  private final static String _COMMENTS_ = "/comments/";
 
   @Steps
   RealworldSteps realworldSteps;
@@ -59,10 +61,38 @@ public class RealworldSteps extends BaseSteps {
     }
   }
 
+  @Step
+  public static void updateAccount(DataTable dataTable) throws IOException {
+    sendRequestWithBodyJson(PUT, _API_USER_, createBody(dataTable));
+  }
 
+  @Step
+  public static void createArticle(DataTable dataTable) throws IOException {
+    sendRequestWithBodyJson(POST, _API_ARTICLES_, createBody(dataTable));
+  }
+
+  @Step
+  public static void deleteArticle() {
+    sendRequest(DELETE, _API_ARTICLES_ + sessionVariableCalled("slug"));
+  }
+
+  @Step
+  public static void modifyArticle(DataTable dataTable) throws IOException {
+    sendRequestWithBodyJson(PUT, _API_ARTICLES_ + sessionVariableCalled("slug"), createBody(dataTable));
+  }
+
+  @Step
+  public static void createComment(DataTable dataTable) throws IOException {
+    sendRequestWithBodyJson(POST, _API_ARTICLES_ + sessionVariableCalled("slug") + _COMMENTS_, createBody(dataTable));
+  }
+
+  @Step
+  public static void deleteComment() {
+    sendRequest(DELETE, addCommentEndpoint(sessionVariableCalled("slug")) + sessionVariableCalled("comment_id"));
+  }
   // Private
 
   private static String addCommentEndpoint(String slug){
-    return _API_ARTICLES_ + slug + "/comments";
+    return _API_ARTICLES_ + slug + "/comments/";
   }
 }
